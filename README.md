@@ -1,7 +1,7 @@
 <h1 align="center">🎯 SenaXHub</h1>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/69-sena/SenaXHub/main/logo.png" width="200px" alt="SenaXHub Logo"/>
+  <img src="[https://raw.githubusercontent.com/69-sena/SenaXHub/main/logo.png](https://avatars.githubusercontent.com/u/214269193?v=4)" width="200px" alt="SenaXHub Logo"/>
 </p>
 
 <p align="center">
