@@ -1,12 +1,19 @@
 # 🎯 SenaXHub
 
-[![Stars](https://img.shields.io/github/stars/69-sena/SenaXHub?style=for-the-badge&color=yellow)](https://github.com/69-sena/SenaXHub/stargazers)
-[![Forks](https://img.shields.io/github/forks/69-sena/SenaXHub?style=for-the-badge&color=blue)](https://github.com/69-sena/SenaXHub/forks)
-[![License](https://img.shields.io/github/license/69-sena/SenaXHub?style=for-the-badge&color=green)](LICENSE)
-[![Issues](https://img.shields.io/github/issues/69-sena/SenaXHub?style=for-the-badge&color=red)](https://github.com/69-sena/SenaXHub/issues)
+![SenaXHub Logo](https://raw.githubusercontent.com/69-sena/repo/main/logo.png) <!-- Ganti link logo sesuai repo kamu -->
+
+SenaXHub adalah hub script Roblox dengan berbagai fitur yang memudahkan gameplay.  
+Mudah digunakan, tanpa key system, dan dilengkapi tampilan UI modern.
 
 ---
 
-## 🖤 Tentang
-**SenaXHub** adalah cheat script Roblox dengan berbagai fitur powerful, tampilan UI modern, dan tanpa key system.  
-Didesain untuk mempermudah player dalam bermain dengan style yang simple & clean.
+## 📂 Struktur Repo
+- **Loader/** → berisi script loader
+- **README.md** → dokumentasi project
+
+---
+
+## 🚀 Cara Penggunaan
+1. Salin kode berikut:
+   ```lua
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/69-sena/SenaXHub/main/Loader/loader.lua"))()
