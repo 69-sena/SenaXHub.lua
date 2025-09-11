@@ -1,16 +1,13 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local RunService = game:GetService("RunService")
 
 local savedPosition = nil
-local frozen = false
 getgenv().MenuActive = true
 
-local function FreezeCharacter(state)
+local function FreezeCharacter()
 	local character = player.Character
 	if character and character:FindFirstChild("HumanoidRootPart") then
-		character.HumanoidRootPart.Anchored = state
-		frozen = state
+		character.HumanoidRootPart.Anchored = true
 	end
 end
 
@@ -18,13 +15,16 @@ local function SavePosition()
 	local character = player.Character
 	if character and character:FindFirstChild("HumanoidRootPart") then
 		savedPosition = character.HumanoidRootPart.CFrame
-		FreezeCharacter(true)
+		FreezeCharacter()
 	end
 end
 
 local function DeletePosition()
 	savedPosition = nil
-	FreezeCharacter(false)
+	local character = player.Character
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		character.HumanoidRootPart.Anchored = false
+	end
 end
 
 local function CreateMenu()
@@ -69,8 +69,12 @@ player.CharacterAdded:Connect(function()
 	if getgenv().MenuActive then
 		CreateMenu()
 		if savedPosition then
-			FreezeCharacter(true)
+			local character = player.Character
+			if character and character:FindFirstChild("HumanoidRootPart") then
+				character.HumanoidRootPart.CFrame = savedPosition
+			end
 		end
+		FreezeCharacter()
 	end
 end)
 
@@ -80,9 +84,22 @@ function ToggleMenu(state)
 		if player.PlayerGui:FindFirstChild("MinimalMenu") then
 			player.PlayerGui.MinimalMenu:Destroy()
 		end
-		FreezeCharacter(false)
+		local character = player.Character
+		if character and character:FindFirstChild("HumanoidRootPart") then
+			character.HumanoidRootPart.Anchored = false
+		end
 	else
 		CreateMenu()
+		FreezeCharacter()
+	end
+end
+
+while task.wait(0.1) do
+	if getgenv().MenuActive then
+		local character = player.Character
+		if character and character:FindFirstChild("HumanoidRootPart") then
+			character.HumanoidRootPart.Anchored = true
+		end
 	end
 end
 
