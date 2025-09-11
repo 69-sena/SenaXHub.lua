@@ -47,11 +47,13 @@ toggleBtn.TextScaled = true
 toggleBtn.Parent = screenGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 180, 0, 150)
+frame.Size = UDim2.new(0, 180, 0, 120)
 frame.Position = UDim2.new(0, 100, 1, -200)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BackgroundTransparency = 0.3
 frame.Visible = false
+frame.Active = true
+frame.Draggable = true
 frame.Parent = screenGui
 local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 12)
@@ -66,7 +68,9 @@ saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 saveBtn.Font = Enum.Font.SourceSansBold
 saveBtn.TextScaled = true
 saveBtn.Parent = frame
-local c1 = Instance.new("UICorner"); c1.CornerRadius = UDim.new(0,8); c1.Parent = saveBtn
+local c1 = Instance.new("UICorner")
+c1.CornerRadius = UDim.new(0, 8)
+c1.Parent = saveBtn
 
 local deleteBtn = Instance.new("TextButton")
 deleteBtn.Size = UDim2.new(0, 160, 0, 40)
@@ -77,39 +81,9 @@ deleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
-local c2 = Instance.new("UICorner"); c2.CornerRadius = UDim.new(0,8); c2.Parent = deleteBtn
-
-local hide69Btn = Instance.new("TextButton")
-hide69Btn.Size = UDim2.new(0, 160, 0, 40)
-hide69Btn.Position = UDim2.new(0, 10, 0, 110)
-hide69Btn.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
-hide69Btn.Text = "Hide 69"
-hide69Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-hide69Btn.Font = Enum.Font.SourceSansBold
-hide69Btn.TextScaled = true
-hide69Btn.Parent = frame
-local c3 = Instance.new("UICorner"); c3.CornerRadius = UDim.new(0,8); c3.Parent = hide69Btn
-
-local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 22, 0, 22)
-closeBtn.Position = UDim2.new(1, -26, 0, 4)
-closeBtn.BackgroundTransparency = 1
-closeBtn.Text = "✕"
-closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeBtn.Font = Enum.Font.SourceSansBold
-closeBtn.TextScaled = true
-closeBtn.Parent = frame
-
-local restoreBtn = Instance.new("TextButton")
-restoreBtn.Size = UDim2.new(0, 80, 0, 30)
-restoreBtn.Position = toggleBtn.Position
-restoreBtn.BackgroundTransparency = 1
-restoreBtn.Text = "Show 69"
-restoreBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
-restoreBtn.Font = Enum.Font.SourceSansBold
-restoreBtn.TextScaled = true
-restoreBtn.Visible = false
-restoreBtn.Parent = screenGui
+local c2 = Instance.new("UICorner")
+c2.CornerRadius = UDim.new(0, 8)
+c2.Parent = deleteBtn
 
 saveBtn.MouseButton1Click:Connect(SavePosition)
 deleteBtn.MouseButton1Click:Connect(DeletePosition)
@@ -118,48 +92,6 @@ local open = false
 toggleBtn.MouseButton1Click:Connect(function()
 	open = not open
 	frame.Visible = open
-end)
-
-closeBtn.MouseButton1Click:Connect(function()
-	frame.Visible = false
-	open = false
-end)
-
-local function Hide69()
-	toggleBtn.Visible = false
-	frame.Visible = false
-	restoreBtn.Visible = true
-	open = false
-end
-
-local function Show69()
-	toggleBtn.Visible = true
-	restoreBtn.Visible = false
-end
-
-hide69Btn.MouseButton1Click:Connect(function()
-	Hide69()
-end)
-
-restoreBtn.MouseButton1Click:Connect(function()
-	Show69()
-end)
-
-if toggleBtn.MouseButton2Click then
-	toggleBtn.MouseButton2Click:Connect(function()
-		Hide69()
-	end)
-end
-
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-	if gameProcessed then return end
-	if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.H then
-		if toggleBtn.Visible then
-			Hide69()
-		else
-			Show69()
-		end
-	end
 end)
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
