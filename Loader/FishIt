@@ -29,19 +29,18 @@ end
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
+-- Frame lebih kecil dan di kotak hijau bawah kiri
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 180, 0, 100)
-frame.Position = UDim2.new(0.05, 0, 0.7, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BackgroundTransparency = 0.2
-frame.BorderSizePixel = 2
+frame.Size = UDim2.new(0, 120, 0, 70)
+frame.Position = UDim2.new(0.05, 0, 0.82, 0) -- geser sesuai keinginan
+frame.BackgroundTransparency = 1
 frame.Parent = screenGui
 
 local saveBtn = Instance.new("TextButton")
 saveBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
-saveBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
+saveBtn.Position = UDim2.new(0.05, 0, 0.05, 0)
 saveBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-saveBtn.Text = "Save Posisi"
+saveBtn.Text = "Save"
 saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 saveBtn.Font = Enum.Font.SourceSansBold
 saveBtn.TextScaled = true
@@ -49,9 +48,9 @@ saveBtn.Parent = frame
 
 local deleteBtn = Instance.new("TextButton")
 deleteBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
-deleteBtn.Position = UDim2.new(0.05, 0, 0.55, 0)
+deleteBtn.Position = UDim2.new(0.05, 0, 0.52, 0)
 deleteBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-deleteBtn.Text = "Delete Posisi"
+deleteBtn.Text = "Delete"
 deleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
