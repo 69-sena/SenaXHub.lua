@@ -29,23 +29,38 @@ end
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
+local function AddCornerAndShadow(obj)
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 12)
+	corner.Parent = obj
+	local shadow = Instance.new("UIStroke")
+	shadow.Thickness = 1.5
+	shadow.Color = Color3.fromRGB(50, 50, 50)
+	shadow.Transparency = 0.4
+	shadow.Parent = obj
+end
+
 local toggleBtn = Instance.new("TextButton")
-toggleBtn.Size = UDim2.new(0, 100, 0, 35)
-toggleBtn.Position = UDim2.new(0, 10, 1, -45)
-toggleBtn.BackgroundTransparency = 1
-toggleBtn.BorderSizePixel = 0
-toggleBtn.Text = "🍾 AMER"
+toggleBtn.Size = UDim2.new(0, 80, 0, 30)
+toggleBtn.Position = UDim2.new(0, 10, 1, -40)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+toggleBtn.Text = "⚙ Menu"
 toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
 toggleBtn.Parent = screenGui
+AddCornerAndShadow(toggleBtn)
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 140, 0, 100)
-frame.Position = UDim2.new(0, 10, 1, -150)
-frame.BackgroundTransparency = 1
+frame.Size = UDim2.new(0, 160, 0, 120)
+frame.Position = UDim2.new(0, 10, 1, -180)
+frame.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+frame.BackgroundTransparency = 0.1
 frame.Visible = false
+frame.Active = true
+frame.Draggable = true
 frame.Parent = screenGui
+AddCornerAndShadow(frame)
 
 local saveBtn = Instance.new("TextButton")
 saveBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
@@ -56,6 +71,7 @@ saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 saveBtn.Font = Enum.Font.SourceSansBold
 saveBtn.TextScaled = true
 saveBtn.Parent = frame
+AddCornerAndShadow(saveBtn)
 
 local deleteBtn = Instance.new("TextButton")
 deleteBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
@@ -66,6 +82,7 @@ deleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
+AddCornerAndShadow(deleteBtn)
 
 saveBtn.MouseButton1Click:Connect(SavePosition)
 deleteBtn.MouseButton1Click:Connect(DeletePosition)
