@@ -34,19 +34,14 @@ local function AddCornerAndShadow(obj)
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 12)
 	corner.Parent = obj
-	local shadow = Instance.new("UIStroke")
-	shadow.Thickness = 1.5
-	shadow.Color = Color3.fromRGB(50, 50, 50)
-	shadow.Transparency = 0.4
-	shadow.Parent = obj
 end
 
 local function AddHoverEffect(button, normalColor, hoverColor)
 	button.MouseEnter:Connect(function()
-		button.BackgroundColor3 = hoverColor
+		button.TextColor3 = hoverColor
 	end)
 	button.MouseLeave:Connect(function()
-		button.BackgroundColor3 = normalColor
+		button.TextColor3 = normalColor
 	end)
 end
 
@@ -69,13 +64,12 @@ dragArea.Parent = screenGui
 
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Size = UDim2.new(1, 0, 1, 0)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+toggleBtn.BackgroundTransparency = 1
 toggleBtn.Text = "⚙ Menu"
-toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
 toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
 toggleBtn.Parent = dragArea
-AddCornerAndShadow(toggleBtn)
 AddHoverEffect(toggleBtn, Color3.fromRGB(255, 105, 180), Color3.fromRGB(255, 160, 200))
 AddClickEffect(toggleBtn)
 
@@ -122,7 +116,7 @@ saveBtn.Font = Enum.Font.SourceSansBold
 saveBtn.TextScaled = true
 saveBtn.Parent = frame
 AddCornerAndShadow(saveBtn)
-AddHoverEffect(saveBtn, Color3.fromRGB(0, 170, 255), Color3.fromRGB(0, 200, 255))
+AddHoverEffect(saveBtn, Color3.fromRGB(255, 255, 255), Color3.fromRGB(200, 255, 255))
 AddClickEffect(saveBtn)
 
 local deleteBtn = Instance.new("TextButton")
@@ -135,7 +129,7 @@ deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
 AddCornerAndShadow(deleteBtn)
-AddHoverEffect(deleteBtn, Color3.fromRGB(255, 80, 80), Color3.fromRGB(255, 120, 120))
+AddHoverEffect(deleteBtn, Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 200, 200))
 AddClickEffect(deleteBtn)
 
 saveBtn.MouseButton1Click:Connect(SavePosition)
