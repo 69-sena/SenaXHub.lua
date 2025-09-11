@@ -32,7 +32,7 @@ local function DeletePosition()
 end
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "AMERGui"
+screenGui.Name = "69Gui"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
@@ -40,7 +40,7 @@ local toggleBtn = Instance.new("TextButton")
 toggleBtn.Size = UDim2.new(0, 80, 0, 30)
 toggleBtn.Position = UDim2.new(0, 10, 1, -40)
 toggleBtn.BackgroundTransparency = 1
-toggleBtn.Text = "🍾 AMER"
+toggleBtn.Text = "💸 69"
 toggleBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
 toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
@@ -79,16 +79,16 @@ deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
 local c2 = Instance.new("UICorner"); c2.CornerRadius = UDim.new(0,8); c2.Parent = deleteBtn
 
-local hideAmerBtn = Instance.new("TextButton")
-hideAmerBtn.Size = UDim2.new(0, 160, 0, 40)
-hideAmerBtn.Position = UDim2.new(0, 10, 0, 110)
-hideAmerBtn.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
-hideAmerBtn.Text = "Hide AMER"
-hideAmerBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-hideAmerBtn.Font = Enum.Font.SourceSansBold
-hideAmerBtn.TextScaled = true
-hideAmerBtn.Parent = frame
-local c3 = Instance.new("UICorner"); c3.CornerRadius = UDim.new(0,8); c3.Parent = hideAmerBtn
+local hide69Btn = Instance.new("TextButton")
+hide69Btn.Size = UDim2.new(0, 160, 0, 40)
+hide69Btn.Position = UDim2.new(0, 10, 0, 110)
+hide69Btn.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+hide69Btn.Text = "Hide 69"
+hide69Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+hide69Btn.Font = Enum.Font.SourceSansBold
+hide69Btn.TextScaled = true
+hide69Btn.Parent = frame
+local c3 = Instance.new("UICorner"); c3.CornerRadius = UDim.new(0,8); c3.Parent = hide69Btn
 
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 22, 0, 22)
@@ -104,7 +104,7 @@ local restoreBtn = Instance.new("TextButton")
 restoreBtn.Size = UDim2.new(0, 80, 0, 30)
 restoreBtn.Position = toggleBtn.Position
 restoreBtn.BackgroundTransparency = 1
-restoreBtn.Text = "Show AMER"
+restoreBtn.Text = "Show 69"
 restoreBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
 restoreBtn.Font = Enum.Font.SourceSansBold
 restoreBtn.TextScaled = true
@@ -125,29 +125,29 @@ closeBtn.MouseButton1Click:Connect(function()
 	open = false
 end)
 
-local function HideAmer()
+local function Hide69()
 	toggleBtn.Visible = false
 	frame.Visible = false
 	restoreBtn.Visible = true
 	open = false
 end
 
-local function ShowAmer()
+local function Show69()
 	toggleBtn.Visible = true
 	restoreBtn.Visible = false
 end
 
-hideAmerBtn.MouseButton1Click:Connect(function()
-	HideAmer()
+hide69Btn.MouseButton1Click:Connect(function()
+	Hide69()
 end)
 
 restoreBtn.MouseButton1Click:Connect(function()
-	ShowAmer()
+	Show69()
 end)
 
 if toggleBtn.MouseButton2Click then
 	toggleBtn.MouseButton2Click:Connect(function()
-		HideAmer()
+		Hide69()
 	end)
 end
 
@@ -155,9 +155,9 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then return end
 	if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.H then
 		if toggleBtn.Visible then
-			HideAmer()
+			Hide69()
 		else
-			ShowAmer()
+			Show69()
 		end
 	end
 end)
