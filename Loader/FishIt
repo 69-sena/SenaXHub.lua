@@ -1,4 +1,5 @@
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
@@ -40,6 +41,25 @@ local function AddCornerAndShadow(obj)
 	shadow.Parent = obj
 end
 
+local function AddHoverEffect(button, normalColor, hoverColor)
+	button.MouseEnter:Connect(function()
+		button.BackgroundColor3 = hoverColor
+	end)
+	button.MouseLeave:Connect(function()
+		button.BackgroundColor3 = normalColor
+	end)
+end
+
+local function AddClickEffect(button)
+	local originalSize = button.Size
+	button.MouseButton1Down:Connect(function()
+		button:TweenSize(originalSize - UDim2.new(0, 4, 0, 4), "Out", "Quad", 0.1, true)
+	end)
+	button.MouseButton1Up:Connect(function()
+		button:TweenSize(originalSize, "Out", "Quad", 0.1, true)
+	end)
+end
+
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Size = UDim2.new(0, 80, 0, 30)
 toggleBtn.Position = UDim2.new(0, 10, 1, -40)
@@ -50,17 +70,40 @@ toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
 toggleBtn.Parent = screenGui
 AddCornerAndShadow(toggleBtn)
+AddHoverEffect(toggleBtn, Color3.fromRGB(255, 105, 180), Color3.fromRGB(255, 160, 200))
+AddClickEffect(toggleBtn)
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 160, 0, 120)
 frame.Position = UDim2.new(0, 10, 1, -180)
 frame.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
-frame.BackgroundTransparency = 0.1
+frame.BackgroundTransparency = 1
 frame.Visible = false
-frame.Active = true
-frame.Draggable = true
 frame.Parent = screenGui
 AddCornerAndShadow(frame)
+
+local dragging = false
+local dragStart, startPos
+
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = frame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
 
 local saveBtn = Instance.new("TextButton")
 saveBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
@@ -72,6 +115,8 @@ saveBtn.Font = Enum.Font.SourceSansBold
 saveBtn.TextScaled = true
 saveBtn.Parent = frame
 AddCornerAndShadow(saveBtn)
+AddHoverEffect(saveBtn, Color3.fromRGB(0, 170, 255), Color3.fromRGB(0, 200, 255))
+AddClickEffect(saveBtn)
 
 local deleteBtn = Instance.new("TextButton")
 deleteBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
@@ -83,6 +128,8 @@ deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
 AddCornerAndShadow(deleteBtn)
+AddHoverEffect(deleteBtn, Color3.fromRGB(255, 80, 80), Color3.fromRGB(255, 120, 120))
+AddClickEffect(deleteBtn)
 
 saveBtn.MouseButton1Click:Connect(SavePosition)
 deleteBtn.MouseButton1Click:Connect(DeletePosition)
@@ -90,7 +137,17 @@ deleteBtn.MouseButton1Click:Connect(DeletePosition)
 local open = false
 toggleBtn.MouseButton1Click:Connect(function()
 	open = not open
-	frame.Visible = open
+	if open then
+		frame.Visible = true
+		frame:TweenTransparency(0, "Out", "Quad", 0.3, true)
+	else
+		frame:TweenTransparency(1, "Out", "Quad", 0.3, true)
+		task.delay(0.3, function()
+			if not open then
+				frame.Visible = false
+			end
+		end)
+	end
 end)
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
