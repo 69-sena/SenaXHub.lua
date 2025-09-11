@@ -1,3 +1,4 @@
+getgenv().ScriptMode = "Kaitan"
 loadstring(game:HttpGet("https://bonkhub.online/loader.lua",true))()
 
 local player = game.Players.LocalPlayer
