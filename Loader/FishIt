@@ -1,24 +1,25 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local RunService = game:GetService("RunService")
 
 local savedPosition = nil
 local frozen = false
+getgenv().MenuActive = true
 
 local function FreezeCharacter(state)
-	if state then
-		humanoidRootPart.Anchored = true
-		frozen = true
-	else
-		humanoidRootPart.Anchored = false
-		frozen = false
+	local character = player.Character
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		character.HumanoidRootPart.Anchored = state
+		frozen = state
 	end
 end
 
 local function SavePosition()
-	savedPosition = humanoidRootPart.CFrame
-	FreezeCharacter(true)
+	local character = player.Character
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		savedPosition = character.HumanoidRootPart.CFrame
+		FreezeCharacter(true)
+	end
 end
 
 local function DeletePosition()
@@ -26,32 +27,64 @@ local function DeletePosition()
 	FreezeCharacter(false)
 end
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = player:WaitForChild("PlayerGui")
+local function CreateMenu()
+	if player:FindFirstChild("PlayerGui") == nil then return end
+	if player.PlayerGui:FindFirstChild("MinimalMenu") then
+		player.PlayerGui.MinimalMenu:Destroy()
+	end
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 50, 0, 50)
-frame.Position = UDim2.new(0, 10, 0, 50)
-frame.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-frame.BackgroundTransparency = 0
-frame.BorderSizePixel = 1
-frame.Parent = screenGui
+	local screenGui = Instance.new("ScreenGui")
+	screenGui.Name = "MinimalMenu"
+	screenGui.Parent = player.PlayerGui
 
-local saveBtn = Instance.new("TextButton")
-saveBtn.Size = UDim2.new(0.45, 0, 0.45, 0)
-saveBtn.Position = UDim2.new(0.05, 0, 0.05, 0)
-saveBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-saveBtn.Text = ""
-saveBtn.Parent = frame
-saveBtn.MouseButton1Click:Connect(SavePosition)
+	local frame = Instance.new("Frame")
+	frame.Size = UDim2.new(0, 50, 0, 50)
+	frame.Position = UDim2.new(0, 10, 0, 50)
+	frame.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	frame.BackgroundTransparency = 0
+	frame.BorderSizePixel = 1
+	frame.Parent = screenGui
 
-local deleteBtn = Instance.new("TextButton")
-deleteBtn.Size = UDim2.new(0.45, 0, 0.45, 0)
-deleteBtn.Position = UDim2.new(0.5, 0, 0.5, 0)
-deleteBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-deleteBtn.Text = ""
-deleteBtn.Parent = frame
-deleteBtn.MouseButton1Click:Connect(DeletePosition)
+	local saveBtn = Instance.new("TextButton")
+	saveBtn.Size = UDim2.new(0.45, 0, 0.45, 0)
+	saveBtn.Position = UDim2.new(0.05, 0, 0.05, 0)
+	saveBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+	saveBtn.Text = ""
+	saveBtn.Parent = frame
+	saveBtn.MouseButton1Click:Connect(SavePosition)
+
+	local deleteBtn = Instance.new("TextButton")
+	deleteBtn.Size = UDim2.new(0.45, 0, 0.45, 0)
+	deleteBtn.Position = UDim2.new(0.5, 0, 0.5, 0)
+	deleteBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	deleteBtn.Text = ""
+	deleteBtn.Parent = frame
+	deleteBtn.MouseButton1Click:Connect(DeletePosition)
+end
+
+CreateMenu()
+
+player.CharacterAdded:Connect(function()
+	task.wait(0.5)
+	if getgenv().MenuActive then
+		CreateMenu()
+		if savedPosition then
+			FreezeCharacter(true)
+		end
+	end
+end)
+
+function ToggleMenu(state)
+	getgenv().MenuActive = state
+	if not state then
+		if player.PlayerGui:FindFirstChild("MinimalMenu") then
+			player.PlayerGui.MinimalMenu:Destroy()
+		end
+		FreezeCharacter(false)
+	else
+		CreateMenu()
+	end
+end
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
 
