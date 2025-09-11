@@ -1,5 +1,4 @@
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
@@ -30,81 +29,27 @@ end
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
-local function AddCornerAndShadow(obj)
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 12)
-	corner.Parent = obj
-end
-
-local function AddHoverEffect(button, normalColor, hoverColor)
-	button.MouseEnter:Connect(function()
-		button.TextColor3 = hoverColor
-	end)
-	button.MouseLeave:Connect(function()
-		button.TextColor3 = normalColor
-	end)
-end
-
-local function AddClickEffect(button)
-	local originalSize = button.Size
-	button.MouseButton1Down:Connect(function()
-		button:TweenSize(originalSize - UDim2.new(0, 4, 0, 4), "Out", "Quad", 0.1, true)
-	end)
-	button.MouseButton1Up:Connect(function()
-		button:TweenSize(originalSize, "Out", "Quad", 0.1, true)
-	end)
-end
-
-local dragArea = Instance.new("Frame")
-dragArea.Size = UDim2.new(0, 80, 0, 30)
-dragArea.Position = UDim2.new(0, 10, 1, -40)
-dragArea.BackgroundTransparency = 1
-dragArea.Active = true
-dragArea.Parent = screenGui
-
 local toggleBtn = Instance.new("TextButton")
-toggleBtn.Size = UDim2.new(1, 0, 1, 0)
+toggleBtn.Size = UDim2.new(0, 80, 0, 30)
+toggleBtn.Position = UDim2.new(0, 10, 1, -40)
 toggleBtn.BackgroundTransparency = 1
-toggleBtn.Text = "⚙ Menu"
+toggleBtn.Text = "ㅤㅤ"
 toggleBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
 toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
-toggleBtn.Parent = dragArea
-AddHoverEffect(toggleBtn, Color3.fromRGB(255, 105, 180), Color3.fromRGB(255, 160, 200))
-AddClickEffect(toggleBtn)
+toggleBtn.Parent = screenGui
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 160, 0, 120)
-frame.Position = dragArea.Position + UDim2.new(0, 0, 0, -140)
-frame.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
-frame.BackgroundTransparency = 1
+frame.Position = UDim2.new(0, 100, 1, -160)
+frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+frame.BackgroundTransparency = 0.3
 frame.Visible = false
 frame.Parent = screenGui
-AddCornerAndShadow(frame)
 
-local dragging = false
-local dragStart, startPos
-
-dragArea.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = dragArea.Position
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-		local delta = input.Position - dragStart
-		dragArea.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		frame.Position = dragArea.Position + UDim2.new(0, 0, 0, -140)
-	end
-end)
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
 
 local saveBtn = Instance.new("TextButton")
 saveBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
@@ -115,9 +60,10 @@ saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 saveBtn.Font = Enum.Font.SourceSansBold
 saveBtn.TextScaled = true
 saveBtn.Parent = frame
-AddCornerAndShadow(saveBtn)
-AddHoverEffect(saveBtn, Color3.fromRGB(255, 255, 255), Color3.fromRGB(200, 255, 255))
-AddClickEffect(saveBtn)
+
+local corner1 = Instance.new("UICorner")
+corner1.CornerRadius = UDim.new(0, 8)
+corner1.Parent = saveBtn
 
 local deleteBtn = Instance.new("TextButton")
 deleteBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
@@ -128,9 +74,10 @@ deleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
-AddCornerAndShadow(deleteBtn)
-AddHoverEffect(deleteBtn, Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 200, 200))
-AddClickEffect(deleteBtn)
+
+local corner2 = Instance.new("UICorner")
+corner2.CornerRadius = UDim.new(0, 8)
+corner2.Parent = deleteBtn
 
 saveBtn.MouseButton1Click:Connect(SavePosition)
 deleteBtn.MouseButton1Click:Connect(DeletePosition)
@@ -138,17 +85,7 @@ deleteBtn.MouseButton1Click:Connect(DeletePosition)
 local open = false
 toggleBtn.MouseButton1Click:Connect(function()
 	open = not open
-	if open then
-		frame.Visible = true
-		frame:TweenTransparency(0, "Out", "Quad", 0.3, true)
-	else
-		frame:TweenTransparency(1, "Out", "Quad", 0.3, true)
-		task.delay(0.3, function()
-			if not open then
-				frame.Visible = false
-			end
-		end)
-	end
+	frame.Visible = open
 end)
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
