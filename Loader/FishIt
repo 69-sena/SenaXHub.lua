@@ -60,22 +60,28 @@ local function AddClickEffect(button)
 	end)
 end
 
+local dragArea = Instance.new("Frame")
+dragArea.Size = UDim2.new(0, 80, 0, 30)
+dragArea.Position = UDim2.new(0, 10, 1, -40)
+dragArea.BackgroundTransparency = 1
+dragArea.Active = true
+dragArea.Parent = screenGui
+
 local toggleBtn = Instance.new("TextButton")
-toggleBtn.Size = UDim2.new(0, 80, 0, 30)
-toggleBtn.Position = UDim2.new(0, 10, 1, -40)
+toggleBtn.Size = UDim2.new(1, 0, 1, 0)
 toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
 toggleBtn.Text = "⚙ Menu"
 toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
-toggleBtn.Parent = screenGui
+toggleBtn.Parent = dragArea
 AddCornerAndShadow(toggleBtn)
 AddHoverEffect(toggleBtn, Color3.fromRGB(255, 105, 180), Color3.fromRGB(255, 160, 200))
 AddClickEffect(toggleBtn)
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 160, 0, 120)
-frame.Position = toggleBtn.Position + UDim2.new(0, 0, 0, -140)
+frame.Position = dragArea.Position + UDim2.new(0, 0, 0, -140)
 frame.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
 frame.BackgroundTransparency = 1
 frame.Visible = false
@@ -85,11 +91,11 @@ AddCornerAndShadow(frame)
 local dragging = false
 local dragStart, startPos
 
-toggleBtn.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+dragArea.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
 		dragStart = input.Position
-		startPos = toggleBtn.Position
+		startPos = dragArea.Position
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
@@ -99,10 +105,10 @@ toggleBtn.InputBegan:Connect(function(input)
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
 		local delta = input.Position - dragStart
-		toggleBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		frame.Position = toggleBtn.Position + UDim2.new(0, 0, 0, -140)
+		dragArea.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		frame.Position = dragArea.Position + UDim2.new(0, 0, 0, -140)
 	end
 end)
 
