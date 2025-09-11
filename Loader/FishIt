@@ -1,7 +1,12 @@
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+player.CharacterAdded:Connect(function(char)
+	character = char
+	humanoidRootPart = char:WaitForChild("HumanoidRootPart")
+end)
 
 local savedPosition = nil
 local frozen = false
@@ -27,57 +32,84 @@ local function DeletePosition()
 end
 
 local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AMERGui"
+screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Size = UDim2.new(0, 80, 0, 30)
 toggleBtn.Position = UDim2.new(0, 10, 1, -40)
 toggleBtn.BackgroundTransparency = 1
-toggleBtn.Text = "ㅤㅤ"
+toggleBtn.Text = "🍾 AMER"
 toggleBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
 toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
 toggleBtn.Parent = screenGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 160, 0, 120)
-frame.Position = UDim2.new(0, 100, 1, -160)
-frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+frame.Size = UDim2.new(0, 180, 0, 150)
+frame.Position = UDim2.new(0, 100, 1, -200)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BackgroundTransparency = 0.3
 frame.Visible = false
 frame.Parent = screenGui
-
 local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 12)
 corner.Parent = frame
 
 local saveBtn = Instance.new("TextButton")
-saveBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
-saveBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
+saveBtn.Size = UDim2.new(0, 160, 0, 40)
+saveBtn.Position = UDim2.new(0, 10, 0, 10)
 saveBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 saveBtn.Text = "Save Posisi"
 saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 saveBtn.Font = Enum.Font.SourceSansBold
 saveBtn.TextScaled = true
 saveBtn.Parent = frame
-
-local corner1 = Instance.new("UICorner")
-corner1.CornerRadius = UDim.new(0, 8)
-corner1.Parent = saveBtn
+local c1 = Instance.new("UICorner"); c1.CornerRadius = UDim.new(0,8); c1.Parent = saveBtn
 
 local deleteBtn = Instance.new("TextButton")
-deleteBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
-deleteBtn.Position = UDim2.new(0.05, 0, 0.55, 0)
+deleteBtn.Size = UDim2.new(0, 160, 0, 40)
+deleteBtn.Position = UDim2.new(0, 10, 0, 60)
 deleteBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
 deleteBtn.Text = "Delete Posisi"
 deleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
+local c2 = Instance.new("UICorner"); c2.CornerRadius = UDim.new(0,8); c2.Parent = deleteBtn
 
-local corner2 = Instance.new("UICorner")
-corner2.CornerRadius = UDim.new(0, 8)
-corner2.Parent = deleteBtn
+local hideAmerBtn = Instance.new("TextButton")
+hideAmerBtn.Size = UDim2.new(0, 160, 0, 40)
+hideAmerBtn.Position = UDim2.new(0, 10, 0, 110)
+hideAmerBtn.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+hideAmerBtn.Text = "Hide AMER"
+hideAmerBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+hideAmerBtn.Font = Enum.Font.SourceSansBold
+hideAmerBtn.TextScaled = true
+hideAmerBtn.Parent = frame
+local c3 = Instance.new("UICorner"); c3.CornerRadius = UDim.new(0,8); c3.Parent = hideAmerBtn
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 22, 0, 22)
+closeBtn.Position = UDim2.new(1, -26, 0, 4)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Text = "✕"
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextScaled = true
+closeBtn.Parent = frame
+
+local restoreBtn = Instance.new("TextButton")
+restoreBtn.Size = UDim2.new(0, 80, 0, 30)
+restoreBtn.Position = toggleBtn.Position
+restoreBtn.BackgroundTransparency = 1
+restoreBtn.Text = "Show AMER"
+restoreBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
+restoreBtn.Font = Enum.Font.SourceSansBold
+restoreBtn.TextScaled = true
+restoreBtn.Visible = false
+restoreBtn.Parent = screenGui
 
 saveBtn.MouseButton1Click:Connect(SavePosition)
 deleteBtn.MouseButton1Click:Connect(DeletePosition)
@@ -86,6 +118,48 @@ local open = false
 toggleBtn.MouseButton1Click:Connect(function()
 	open = not open
 	frame.Visible = open
+end)
+
+closeBtn.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	open = false
+end)
+
+local function HideAmer()
+	toggleBtn.Visible = false
+	frame.Visible = false
+	restoreBtn.Visible = true
+	open = false
+end
+
+local function ShowAmer()
+	toggleBtn.Visible = true
+	restoreBtn.Visible = false
+end
+
+hideAmerBtn.MouseButton1Click:Connect(function()
+	HideAmer()
+end)
+
+restoreBtn.MouseButton1Click:Connect(function()
+	ShowAmer()
+end)
+
+if toggleBtn.MouseButton2Click then
+	toggleBtn.MouseButton2Click:Connect(function()
+		HideAmer()
+	end)
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.H then
+		if toggleBtn.Visible then
+			HideAmer()
+		else
+			ShowAmer()
+		end
+	end
 end)
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
