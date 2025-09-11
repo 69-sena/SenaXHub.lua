@@ -30,10 +30,10 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 local toggleBtn = Instance.new("TextButton")
-toggleBtn.Size = UDim2.new(0, 80, 0, 30)
-toggleBtn.Position = UDim2.new(0, 10, 1, -40)
+toggleBtn.Size = UDim2.new(0, 100, 0, 35)
+toggleBtn.Position = UDim2.new(0, 10, 1, -45)
 toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-toggleBtn.Text = "⚙ Menu"
+toggleBtn.Text = "🍾 AMER BETA"
 toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleBtn.Font = Enum.Font.SourceSansBold
 toggleBtn.TextScaled = true
@@ -42,8 +42,7 @@ toggleBtn.Parent = screenGui
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 140, 0, 100)
 frame.Position = UDim2.new(0, 10, 1, -150)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BackgroundTransparency = 0.2
+frame.BackgroundTransparency = 1
 frame.Visible = false
 frame.Parent = screenGui
 
