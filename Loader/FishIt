@@ -58,9 +58,6 @@ deleteBtn.Font = Enum.Font.SourceSansBold
 deleteBtn.TextScaled = true
 deleteBtn.Parent = frame
 
-saveBtn.MouseButton1Click:Connect(SavePosition)
-deleteBtn.MouseButton1Click:Connect(DeletePosition)
-
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0.9, 0, 0.2, 0)
 closeBtn.Position = UDim2.new(0.05, 0, 0.8, 0)
@@ -71,8 +68,25 @@ closeBtn.Font = Enum.Font.SourceSansBold
 closeBtn.TextScaled = true
 closeBtn.Parent = frame
 
+local openBtn = Instance.new("TextButton")
+openBtn.Size = UDim2.new(0, 100, 0, 40)
+openBtn.Position = UDim2.new(0, 10, 0, 5)
+openBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+openBtn.Text = "Open"
+openBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+openBtn.Font = Enum.Font.SourceSansBold
+openBtn.TextScaled = true
+openBtn.Parent = screenGui
+
+saveBtn.MouseButton1Click:Connect(SavePosition)
+deleteBtn.MouseButton1Click:Connect(DeletePosition)
+
 closeBtn.MouseButton1Click:Connect(function()
 	frame.Visible = false
+end)
+
+openBtn.MouseButton1Click:Connect(function()
+	frame.Visible = true
 end)
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
