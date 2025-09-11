@@ -1,313 +1,84 @@
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
-
-local UI_NAME = "SavePosGUI"
-local HEADER_HEIGHT = 36
-local BUTTON_HEIGHT = 36
-local FRAME_WIDTH = 280
-local FRAME_HEIGHT = 160
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
 local savedPosition = nil
 local frozen = false
-local savedWalkSpeed, savedJumpPower
-local anchoredParts = {}
 
-local function getCharacterParts(character)
-    if not character then return nil end
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    local root = character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso")
-    return humanoid, root
+local function FreezeCharacter(state)
+	if state then
+		humanoidRootPart.Anchored = true
+		frozen = true
+	else
+		humanoidRootPart.Anchored = false
+		frozen = false
+	end
 end
 
-local function freezeCharacter(char, pos)
-    if not char then return end
-    local humanoid, root = getCharacterParts(char)
-    if not humanoid or not root then return end
-    savedWalkSpeed = savedWalkSpeed or humanoid.WalkSpeed
-    savedJumpPower = savedJumpPower or humanoid.JumpPower
-    if pos then
-        root.CFrame = CFrame.new(pos)
-    end
-    humanoid.WalkSpeed = 0
-    humanoid.JumpPower = 0
-    humanoid.PlatformStand = true
-    local prevAnchored = root.Anchored
-    anchoredParts[root] = prevAnchored
-    root.Anchored = true
-    frozen = true
+local function SavePosition()
+	savedPosition = humanoidRootPart.CFrame
+	FreezeCharacter(true)
 end
 
-local function unfreezeCharacter(char)
-    if not char then return end
-    local humanoid, root = getCharacterParts(char)
-    if not humanoid or not root then return end
-    if savedWalkSpeed then humanoid.WalkSpeed = savedWalkSpeed end
-    if savedJumpPower then humanoid.JumpPower = savedJumpPower end
-    humanoid.PlatformStand = false
-    if anchoredParts[root] ~= nil then
-        root.Anchored = anchoredParts[root]
-        anchoredParts[root] = nil
-    else
-        root.Anchored = false
-    end
-    frozen = false
-    savedWalkSpeed, savedJumpPower = nil, nil
-end
-
-local playerGui = player:WaitForChild("PlayerGui")
-if playerGui:FindFirstChild(UI_NAME) then
-    playerGui[UI_NAME]:Destroy()
+local function DeletePosition()
+	savedPosition = nil
+	FreezeCharacter(false)
 end
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = UI_NAME
-screenGui.ResetOnSpawn = false
-screenGui.DisplayOrder = 100
-screenGui.IgnoreGuiInset = true
-screenGui.Enabled = true
-screenGui.Parent = playerGui
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
-local toggleButton = Instance.new("TextButton")
-toggleButton.Name = "ToggleButton"
-toggleButton.Text = "☰"
-toggleButton.Font = Enum.Font.GothamBold
-toggleButton.TextSize = 20
-toggleButton.Size = UDim2.new(0, 44, 0, 44)
-toggleButton.AnchorPoint = Vector2.new(0, 1)
-toggleButton.Position = UDim2.new(0, 12, 1, -60)
-toggleButton.BackgroundTransparency = 0
-toggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleButton.Parent = screenGui
-toggleButton.BorderSizePixel = 0
-toggleButton.AutoButtonColor = true
-toggleButton.LayoutOrder = 1
-toggleButton.ClipsDescendants = true
-toggleButton.ZIndex = 10
-toggleButton.Active = true
-toggleButton.Selectable = true
-toggleButton.TextScaled = true
-toggleButton.TextWrapped = false
-toggleButton.TextXAlignment = Enum.TextXAlignment.Center
-toggleButton.TextYAlignment = Enum.TextYAlignment.Center
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 180, 0, 100)
+frame.Position = UDim2.new(0.05, 0, 0.7, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BackgroundTransparency = 0.2
+frame.BorderSizePixel = 2
+frame.Visible = true
+frame.Parent = screenGui
 
-local container = Instance.new("Frame")
-container.Name = "Container"
-container.Size = UDim2.new(0, FRAME_WIDTH, 0, FRAME_HEIGHT)
-container.Position = UDim2.new(0, 12, 1, -(FRAME_HEIGHT + 80))
-container.BackgroundTransparency = 0
-container.BackgroundColor3 = Color3.fromRGB(18,18,18)
-container.BorderSizePixel = 0
-container.Parent = screenGui
-container.Visible = false
-container.ZIndex = 9
-container.Rotation = 0
-container.AnchorPoint = Vector2.new(0,0)
-container.ClipsDescendants = false
-container.AutomaticSize = Enum.AutomaticSize.None
-container.Name = "SavePosContainer"
+local saveBtn = Instance.new("TextButton")
+saveBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
+saveBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
+saveBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+saveBtn.Text = "Save Posisi"
+saveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+saveBtn.Font = Enum.Font.SourceSansBold
+saveBtn.TextScaled = true
+saveBtn.Parent = frame
 
-local corner = Instance.new("UICorner", container)
-corner.CornerRadius = UDim.new(0, 12)
+local deleteBtn = Instance.new("TextButton")
+deleteBtn.Size = UDim2.new(0.9, 0, 0.4, 0)
+deleteBtn.Position = UDim2.new(0.05, 0, 0.55, 0)
+deleteBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+deleteBtn.Text = "Delete Posisi"
+deleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+deleteBtn.Font = Enum.Font.SourceSansBold
+deleteBtn.TextScaled = true
+deleteBtn.Parent = frame
 
-local header = Instance.new("Frame")
-header.Name = "Header"
-header.Size = UDim2.new(1, 0, 0, HEADER_HEIGHT)
-header.BackgroundTransparency = 0
-header.BackgroundColor3 = Color3.fromRGB(25,25,25)
-header.Parent = container
-header.BorderSizePixel = 0
+saveBtn.MouseButton1Click:Connect(SavePosition)
+deleteBtn.MouseButton1Click:Connect(DeletePosition)
 
-local headerText = Instance.new("TextLabel", header)
-headerText.Size = UDim2.new(1, -72, 1, 0)
-headerText.Position = UDim2.new(0, 12, 0, 0)
-headerText.BackgroundTransparency = 1
-headerText.Text = "AMER • Position"
-headerText.Font = Enum.Font.GothamSemibold
-headerText.TextSize = 14
-headerText.TextColor3 = Color3.fromRGB(230,230,230)
-headerText.TextXAlignment = Enum.TextXAlignment.Left
-headerText.TextYAlignment = Enum.TextYAlignment.Center
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0, 100, 0, 40)
+toggleBtn.Position = UDim2.new(0.05, 0, 0.65, 0)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.Font = Enum.Font.SourceSansBold
+toggleBtn.TextScaled = true
+toggleBtn.Text = "Hide"
+toggleBtn.Parent = screenGui
 
-local closeBtn = Instance.new("TextButton", header)
-closeBtn.Size = UDim2.new(0, 40, 0, HEADER_HEIGHT - 8)
-closeBtn.Position = UDim2.new(1, -48, 0, 4)
-closeBtn.AnchorPoint = Vector2.new(0,0)
-closeBtn.Text = "✕"
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 18
-closeBtn.BackgroundTransparency = 0
-closeBtn.BackgroundColor3 = Color3.fromRGB(35,35,35)
-closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-closeBtn.BorderSizePixel = 0
-closeBtn.AutoButtonColor = true
-closeBtn.Name = "CloseButton"
-
-local closeCorner = Instance.new("UICorner", closeBtn)
-closeCorner.CornerRadius = UDim.new(0, 8)
-
-local body = Instance.new("Frame")
-body.Name = "Body"
-body.Size = UDim2.new(1, -24, 1, -HEADER_HEIGHT - 12)
-body.Position = UDim2.new(0, 12, 0, HEADER_HEIGHT + 8)
-body.BackgroundTransparency = 1
-body.Parent = container
-
-local statusLabel = Instance.new("TextLabel", body)
-statusLabel.Size = UDim2.new(1, 0, 0, 24)
-statusLabel.Position = UDim2.new(0, 0, 0, 0)
-statusLabel.BackgroundTransparency = 1
-statusLabel.Text = "Status: Normal"
-statusLabel.Font = Enum.Font.Gotham
-statusLabel.TextSize = 13
-statusLabel.TextColor3 = Color3.fromRGB(200,200,200)
-statusLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-local saveBtn = Instance.new("TextButton", body)
-saveBtn.Name = "SaveBtn"
-saveBtn.Size = UDim2.new(1, 0, 0, BUTTON_HEIGHT)
-saveBtn.Position = UDim2.new(0, 0, 0, 36)
-saveBtn.Text = "Simpan Posisi (Freeze)"
-saveBtn.Font = Enum.Font.GothamSemibold
-saveBtn.TextSize = 14
-saveBtn.BackgroundTransparency = 0
-saveBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
-saveBtn.BorderSizePixel = 0
-saveBtn.TextColor3 = Color3.fromRGB(255,255,255)
-saveBtn.AutoButtonColor = true
-
-local saveCorner = Instance.new("UICorner", saveBtn)
-saveCorner.CornerRadius = UDim.new(0, 8)
-
-local delBtn = Instance.new("TextButton", body)
-delBtn.Name = "DeleteBtn"
-delBtn.Size = UDim2.new(1, 0, 0, BUTTON_HEIGHT)
-delBtn.Position = UDim2.new(0, 0, 0, 36 + BUTTON_HEIGHT + 8)
-delBtn.Text = "Hapus Posisi (Unfreeze)"
-delBtn.Font = Enum.Font.GothamSemibold
-delBtn.TextSize = 14
-delBtn.BackgroundTransparency = 0
-delBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
-delBtn.BorderSizePixel = 0
-delBtn.TextColor3 = Color3.fromRGB(255,255,255)
-delBtn.AutoButtonColor = true
-
-local delCorner = Instance.new("UICorner", delBtn)
-delCorner.CornerRadius = UDim.new(0, 8)
-
-local infoText = Instance.new("TextLabel", body)
-infoText.Size = UDim2.new(1, 0, 0, 28)
-infoText.Position = UDim2.new(0, 0, 0, 36 + BUTTON_HEIGHT*2 + 16)
-infoText.BackgroundTransparency = 1
-infoText.Text = "Tip: Drag header untuk memindahkan menu."
-infoText.Font = Enum.Font.Gotham
-infoText.TextSize = 12
-infoText.TextColor3 = Color3.fromRGB(170,170,170)
-infoText.TextXAlignment = Enum.TextXAlignment.Left
-
-local tweenInfo = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
-local function openContainer()
-    container.Visible = true
-    container.ClipsDescendants = false
-    container.BackgroundTransparency = 1
-    TweenService:Create(container, TweenInfo.new(0.12), {BackgroundTransparency = 0}):Play()
-end
-
-local function closeContainer()
-    container.Visible = false
-end
-
-toggleButton.MouseButton1Click:Connect(function()
-    container.Visible = not container.Visible
+toggleBtn.MouseButton1Click:Connect(function()
+	frame.Visible = not frame.Visible
+	if frame.Visible then
+		toggleBtn.Text = "Hide"
+	else
+		toggleBtn.Text = "Open"
+	end
 end)
-
-closeBtn.MouseButton1Click:Connect(function()
-    container.Visible = false
-end)
-
-saveBtn.MouseButton1Click:Connect(function()
-    local char = player.Character or player.CharacterAdded:Wait()
-    local humanoid, root = getCharacterParts(char)
-    if not humanoid or not root then
-        statusLabel.Text = "Status: Error - tidak menemukan character"
-        return
-    end
-    savedPosition = root.Position
-    freezeCharacter(char, savedPosition)
-    statusLabel.Text = "Status: Tersimpan & Membeku"
-end)
-
-delBtn.MouseButton1Click:Connect(function()
-    if not savedPosition and not frozen then
-        statusLabel.Text = "Status: Tidak ada posisi tersimpan"
-        return
-    end
-    savedPosition = nil
-    local char = player.Character
-    if char then
-        unfreezeCharacter(char)
-    end
-    statusLabel.Text = "Status: Normal"
-end)
-
-player.CharacterAdded:Connect(function(char)
-    char:WaitForChild("Humanoid", 5)
-    char:WaitForChild("HumanoidRootPart", 5)
-    if savedPosition then
-        local root = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-        if root then
-            root.CFrame = CFrame.new(savedPosition)
-        end
-        freezeCharacter(char, savedPosition)
-        statusLabel.Text = "Status: Tersimpan & Membeku (Respawn)"
-    else
-        unfreezeCharacter(char)
-        statusLabel.Text = "Status: Normal"
-    end
-end)
-
-do
-    local dragging = false
-    local dragStart = nil
-    local startPos = nil
-    local ui = container
-    local function update(input)
-        if not dragging then return end
-        local delta = input.Position - dragStart
-        local newX = startPos.X.Offset + delta.X
-        local newY = startPos.Y.Offset + delta.Y
-        local screenW, screenH = workspace.CurrentCamera.ViewportSize.X, workspace.CurrentCamera.ViewportSize.Y
-        local w = ui.AbsoluteSize.X
-        local h = ui.AbsoluteSize.Y
-        if newX < 0 then newX = 0 end
-        if newY < 0 then newY = 0 end
-        if newX + w > screenW then newX = screenW - w end
-        if newY + h > screenH then newY = screenH - h end
-        ui.Position = UDim2.new(0, newX, 0, newY)
-    end
-    header.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = ui.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            update(input)
-        end
-    end)
-end
-
-statusLabel.Text = "Status: Normal"
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
 
