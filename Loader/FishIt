@@ -75,7 +75,7 @@ AddClickEffect(toggleBtn)
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 160, 0, 120)
-frame.Position = UDim2.new(0, 10, 1, -180)
+frame.Position = toggleBtn.Position + UDim2.new(0, 0, 0, -140)
 frame.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
 frame.BackgroundTransparency = 1
 frame.Visible = false
@@ -85,11 +85,11 @@ AddCornerAndShadow(frame)
 local dragging = false
 local dragStart, startPos
 
-frame.InputBegan:Connect(function(input)
+toggleBtn.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
-		startPos = frame.Position
+		startPos = toggleBtn.Position
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
@@ -101,7 +101,8 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 		local delta = input.Position - dragStart
-		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		toggleBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		frame.Position = toggleBtn.Position + UDim2.new(0, 0, 0, -140)
 	end
 end)
 
