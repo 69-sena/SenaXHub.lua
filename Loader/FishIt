@@ -1,1 +1,82 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
+
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local lastHeartbeat = tick()
+local HEARTBEAT_INTERVAL = 60
+local CLICK_ON_IDLE = true
+local HEARTBEAT_ACTIONS = true
+local enabled = true
+
+local function antiAfkAction()
+    pcall(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end)
+end
+
+local function showNotif(msg)
+    pcall(function()
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Anti AFK by SenaXHub",
+            Text = msg or "Selalu Berjalan",
+            Duration = 5
+        })
+    end)
+end
+
+local function connectIdled(plr)
+    pcall(function()
+        plr.Idled:Connect(function()
+            if enabled and CLICK_ON_IDLE then
+                antiAfkAction()
+            end
+        end)
+    end)
+end
+
+spawn(function()
+    while true do
+        if enabled and HEARTBEAT_ACTIONS and (tick() - lastHeartbeat) >= HEARTBEAT_INTERVAL then
+            antiAfkAction()
+            lastHeartbeat = tick()
+        end
+        RunService.Heartbeat:Wait()
+    end
+end)
+
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game.CoreGui
+ToggleButton.Size = UDim2.new(0, 120, 0, 40)
+ToggleButton.Position = UDim2.new(0, 20, 0.85, 0)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+ToggleButton.TextScaled = true
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.Text = "AntiAFK: ON"
+ToggleButton.Parent = ScreenGui
+ToggleButton.Active = true
+ToggleButton.Draggable = true
+
+ToggleButton.MouseButton1Click:Connect(function()
+    enabled = not enabled
+    ToggleButton.Text = enabled and "AntiAFK: ON" or "AntiAFK: OFF"
+    ToggleButton.BackgroundColor3 = enabled and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(200, 0, 0)
+    showNotif(enabled and "Aktif" or "Mati")
+end)
+
+connectIdled(player)
+showNotif("Anti-AFK aktif — tetap berjalan walau respawn")
+
+player.CharacterAdded:Connect(function()
+    connectIdled(player)
+    if enabled then
+        showNotif("Selalu Berjalan")
+    end
+end)
