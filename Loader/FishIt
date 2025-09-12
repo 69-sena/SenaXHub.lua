@@ -1,110 +1,3 @@
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
-local savedPosition = nil
-getgenv().MenuActive = true
-
-local function FreezeCharacter()
-	local character = player.Character
-	if character and character:FindFirstChild("HumanoidRootPart") then
-		character.HumanoidRootPart.Anchored = true
-	end
-end
-
-local function SavePosition()
-	local character = player.Character
-	if character and character:FindFirstChild("HumanoidRootPart") then
-		savedPosition = character.HumanoidRootPart.CFrame
-		FreezeCharacter()
-	end
-end
-
-local function DeletePosition()
-	savedPosition = nil
-	local character = player.Character
-	if character and character:FindFirstChild("HumanoidRootPart") then
-		character.HumanoidRootPart.Anchored = false
-	end
-end
-
-local function CreateMenu()
-	if player:FindFirstChild("PlayerGui") == nil then return end
-	if player.PlayerGui:FindFirstChild("MinimalMenu") then
-		player.PlayerGui.MinimalMenu:Destroy()
-	end
-
-	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = "MinimalMenu"
-	screenGui.Parent = player.PlayerGui
-
-	local frame = Instance.new("Frame")
-	frame.Size = UDim2.new(0, 50, 0, 50)
-	frame.Position = UDim2.new(0, 10, 0, 50)
-	frame.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-	frame.BackgroundTransparency = 0
-	frame.BorderSizePixel = 1
-	frame.Parent = screenGui
-
-	local saveBtn = Instance.new("TextButton")
-	saveBtn.Size = UDim2.new(0.45, 0, 0.45, 0)
-	saveBtn.Position = UDim2.new(0.05, 0, 0.05, 0)
-	saveBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-	saveBtn.Text = ""
-	saveBtn.Parent = frame
-	saveBtn.MouseButton1Click:Connect(SavePosition)
-
-	local deleteBtn = Instance.new("TextButton")
-	deleteBtn.Size = UDim2.new(0.45, 0, 0.45, 0)
-	deleteBtn.Position = UDim2.new(0.5, 0, 0.5, 0)
-	deleteBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	deleteBtn.Text = ""
-	deleteBtn.Parent = frame
-	deleteBtn.MouseButton1Click:Connect(DeletePosition)
-end
-
-CreateMenu()
-
-player.CharacterAdded:Connect(function()
-	task.wait(0.5)
-	if getgenv().MenuActive then
-		CreateMenu()
-		if savedPosition then
-			local character = player.Character
-			if character and character:FindFirstChild("HumanoidRootPart") then
-				character.HumanoidRootPart.CFrame = savedPosition
-			end
-		end
-		FreezeCharacter()
-	end
-end)
-
-function ToggleMenu(state)
-	getgenv().MenuActive = state
-	if not state then
-		if player.PlayerGui:FindFirstChild("MinimalMenu") then
-			player.PlayerGui.MinimalMenu:Destroy()
-		end
-		local character = player.Character
-		if character and character:FindFirstChild("HumanoidRootPart") then
-			character.HumanoidRootPart.Anchored = false
-		end
-	else
-		CreateMenu()
-		FreezeCharacter()
-	end
-end
-
-while task.wait(0.1) do
-	if getgenv().MenuActive then
-		local character = player.Character
-		if character and character:FindFirstChild("HumanoidRootPart") then
-			character.HumanoidRootPart.Anchored = true
-		end
-	end
-end
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
-
 local player = game.Players.LocalPlayer
 local VirtualUser = game:GetService("VirtualUser")
 
@@ -113,26 +6,64 @@ player.Idled:Connect(function()
     VirtualUser:ClickButton2(Vector2.new())
 end)
 
-task.spawn(function()
-    while task.wait(30) do
-        local char = player.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame * CFrame.new(0, 0, 0.01)
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+local savedPosition = nil
+
+player.CharacterAdded:Connect(function(char)
+    character = char
+    humanoidRootPart = char:WaitForChild("HumanoidRootPart")
+    task.wait(1)
+    if savedPosition then
+        humanoidRootPart.CFrame = savedPosition
+    end
+end)
+
+local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+ScreenGui.Name = "AntiAFKSavePos"
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 150, 0, 80)
+Frame.Position = UDim2.new(0.05, 0, 0.3, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Active = true
+Frame.Draggable = true
+
+local SaveBtn = Instance.new("TextButton", Frame)
+SaveBtn.Size = UDim2.new(1, 0, 0.5, 0)
+SaveBtn.Text = "💾 Save Posisi"
+SaveBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+SaveBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local ClearBtn = Instance.new("TextButton", Frame)
+ClearBtn.Size = UDim2.new(1, 0, 0.5, 0)
+ClearBtn.Position = UDim2.new(0, 0, 0.5, 0)
+ClearBtn.Text = "❌ Hapus Posisi"
+ClearBtn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+ClearBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+SaveBtn.MouseButton1Click:Connect(function()
+    if humanoidRootPart then
+        savedPosition = humanoidRootPart.CFrame
+        SaveBtn.Text = "✅ Posisi Tersimpan"
+    end
+end)
+
+ClearBtn.MouseButton1Click:Connect(function()
+    savedPosition = nil
+    ClearBtn.Text = "❌ Posisi Dihapus"
+end)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if savedPosition and humanoidRootPart then
+        local distance = (humanoidRootPart.Position - savedPosition.Position).magnitude
+        if distance > 2 then
+            humanoidRootPart.CFrame = savedPosition
         end
     end
 end)
 
-local mt = getrawmetatable(game)
-setreadonly(mt, false)
-
-local old = mt.__namecall
-mt.__namecall = newcclosure(function(self, ...)
-    local args = {...}
-    local method = getnamecallmethod()
-    
-    if method == "UserOwnsGamePassAsync" then
-        return true
-    end
-
-    return old(self, unpack(args))
-end)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/MajestySkie/list/refs/heads/main/games"))()
