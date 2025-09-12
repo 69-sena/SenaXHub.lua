@@ -1,16 +1,31 @@
 local player = game.Players.LocalPlayer
 local VirtualUser = game:GetService("VirtualUser")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 
 player.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+task.spawn(function()
+    while task.wait(30) do
+        pcall(function()
+            game:GetService("ReplicatedStorage"):FindFirstChildOfClass("RemoteEvent"):FireServer()
+        end)
+    end
+end)
+
+task.spawn(function()
+    while task.wait(60) do
+        pcall(function()
+            local ping = RunService.Heartbeat:Wait()
+        end)
+    end
+end)
+
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
 local savedPosition = nil
 
 player.CharacterAdded:Connect(function(char)
